@@ -5,8 +5,8 @@ Business Intelligence Project
 
 - [Student Details](#student-details)
 - [Setup Chunk](#setup-chunk)
-- [Understanding the Dataset (Explanatory Data Analysis
-  (EDA))](#understanding-the-dataset-explanatory-data-analysis-eda)
+- [Understanding the Structure of
+  Data](#understanding-the-structure-of-data)
   - [Loading the Dataset](#loading-the-dataset)
     - [Source:](#source)
     - [Reference:](#reference)
@@ -44,7 +44,7 @@ More KnitR options are documented here
 <https://bookdown.org/yihui/rmarkdown-cookbook/chunk-options.html> and
 here <https://yihui.org/knitr/options/>.
 
-# Understanding the Dataset (Explanatory Data Analysis (EDA))
+# Understanding the Structure of Data
 
 ## Loading the Dataset
 

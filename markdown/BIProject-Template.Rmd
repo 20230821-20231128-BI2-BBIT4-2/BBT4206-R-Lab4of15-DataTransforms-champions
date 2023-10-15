@@ -94,7 +94,7 @@ if (require("FactoMineR")) {
 }
 ```
 
-# Understanding the Structure of Data 
+# Understanding the Structure of Data     
 
 ## Loading the Dataset
 
