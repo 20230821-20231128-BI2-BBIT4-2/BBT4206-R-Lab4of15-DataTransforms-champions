@@ -94,7 +94,7 @@ if (require("FactoMineR")) {
 }
 ```
 
-# Understanding the Dataset (Explanatory Data Analysis (EDA))
+# Understanding the Structure of Data 
 
 ## Loading the Dataset
 
