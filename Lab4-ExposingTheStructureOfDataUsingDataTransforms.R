@@ -708,7 +708,7 @@ summary(boston_housing_box_cox_transform)
 sapply(boston_housing_box_cox_transform[, -4],  skewness, type = 2)
 
 #Plot a histogram to view the skewness after the Box-Cox transform
-hist(boston_housing_box_cox_transform[, 1],
+hist(boston_housing_box_cox_transform[, 102],
      main = names(boston_housing_box_cox_transform)[1])
 hist(boston_housing_box_cox_transform[, 2],
      main = names(boston_housing_box_cox_transform)[2])

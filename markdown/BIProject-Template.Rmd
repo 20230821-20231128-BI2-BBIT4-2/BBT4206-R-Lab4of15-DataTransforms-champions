@@ -1,7 +1,7 @@
 ---
 title: "Business Intelligence Project"
-author: "<Specify your name here>"
-date: "<Specify the date when you submitted the lab>"
+author: "<Champions>"
+date: "<15/10/2023>"
 output:
   github_document: 
     toc: yes
@@ -15,12 +15,20 @@ editor_options:
 
 # Student Details
 
-|                                              |     |
-|----------------------------------------------|-----|
-| **Student ID Number**                        | ... |
-| **Student Name**                             | ... |
-| **BBIT 4.2 Group**                           | ... |
-| **BI Project Group Name/ID (if applicable)** | ... |
+|                                              |                  |
+|----------------------------------------------|------------------|
+| **Student ID Number**                        | 126761           |
+|                                              | 134111           |
+|                                              | 133996           |
+|                                              | 127707           |
+|                                              | 135859           |
+| **Student Name**                             | Virginia Wanjiru |
+|                                              | Immaculate Haayo |
+|                                              | Trevor Ngugi     |
+|                                              | Clarice Muthoni  |
+|                                              | Pauline Wairimu  |
+| **BBIT 4.2 Group**                           | B                |
+| **BI Project Group Name/ID (if applicable)** | Champions        |
 
 # Setup Chunk
 
@@ -34,26 +42,388 @@ knitr::opts_chunk$set(
   warning = FALSE,
   collapse = FALSE
 )
+
+
+# STEP 1. Install and Load the Required Packages ----
+## mlbench ----
+if (require("mlbench")) {
+  require("mlbench")
+} else {
+  install.packages("mlbench", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+
+## readr ----
+if (require("readr")) {
+  require("readr")
+} else {
+  install.packages("readr", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+
+## caret ----
+if (require("caret")) {
+  require("caret")
+} else {
+  install.packages("caret", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+
+## e1071 ----
+if (require("e1071")) {
+  require("e1071")
+} else {
+  install.packages("e1071", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+
+## factoextra ----
+if (require("factoextra")) {
+  require("factoextra")
+} else {
+  install.packages("factoextra", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+
+## FactoMineR ----
+if (require("FactoMineR")) {
+  require("FactoMineR")
+} else {
+  install.packages("FactoMineR", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
 ```
 
-# Understanding the Dataset (Exploratory Data Analysis (EDA))
+# Understanding the Dataset (Explanatory Data Analysis (EDA))
 
 ## Loading the Dataset
 
 ### Source:
 
-The dataset that was used can be downloaded here: *\<provide a link\>*
+The dataset that was used can be downloaded here: <https://drive.google.com/drive/folders/1-BGEhfOwquXF6KKXwcvrx7WuZXuqmW9q?usp=sharing>
 
 ### Reference:
 
-*\<Cite the dataset here using APA\>\
+*\
 Refer to the APA 7th edition manual for rules on how to cite datasets: <https://apastyle.apa.org/style-grammar-guidelines/references/examples/data-set-references>*
 
 ```{r Dataset Loader}
 library(readr)
+StudentPerformanceDataset <- read_csv("../markdown/StudentPerformanceDataset.csv")
 
-# Provide the executable R code inside the various code chunks as guided by the
-# lab work.
+```
+ # Applying the Scale Data Transform
+```{r Apply Scale Data Transform}
+
+
+# We use the "preProcess()" function in the caret package
+
+### The Scale Basic Transform on the Student Performance Dataset ----
+# BEFORE
+class(StudentPerformanceDataset)
+summary(StudentPerformanceDataset)
+colnames(StudentPerformanceDataset)
+StudentPerformanceDataset <- as.data.frame(StudentPerformanceDataset)
+
+
+hist(StudentPerformanceDataset[,2], main = names(StudentPerformanceDataset)[2])
+hist(StudentPerformanceDataset[,3], main = names(StudentPerformanceDataset)[3])
+hist(StudentPerformanceDataset[,4], main = names(StudentPerformanceDataset)[5])
+hist(StudentPerformanceDataset[,5], main = names(StudentPerformanceDataset)[6])
+hist(StudentPerformanceDataset[,6], main = names(StudentPerformanceDataset)[7])
+hist(StudentPerformanceDataset[,7], main = names(StudentPerformanceDataset)[8])
+hist(StudentPerformanceDataset[,8], main = names(StudentPerformanceDataset)[9])
+hist(StudentPerformanceDataset[,9], main = names(StudentPerformanceDataset)[10])
+hist(StudentPerformanceDataset[,10], main = names(StudentPerformanceDataset)[11])
+hist(StudentPerformanceDataset[,11], main = names(StudentPerformanceDataset)[12])
+hist(StudentPerformanceDataset[,12], main = names(StudentPerformanceDataset)[13])
+hist(StudentPerformanceDataset[,13], main = names(StudentPerformanceDataset)[14])
+
+student_performance_scale_transform <- as.data.frame(StudentPerformanceDataset)  # Convert to data frame if needed
+preprocessed_data <- preProcess(StudentPerformanceDataset)
+
+model_of_the_transform <- preProcess(StudentPerformanceDataset, method = c("scale"))
+print(model_of_the_transform)
+student_performance_scale_transform <- predict(model_of_the_transform,
+                                               StudentPerformanceDataset)
+# AFTER
+summary(student_performance_scale_transform)
+
+
+student_performance_scale_transform <- as.data.frame(student_performance_scale_transform)  # Convert to data frame if needed
+preprocessed_data <- preProcess(student_performance_scale_transform)
+
+
+
+hist(student_performance_scale_transform[,2],
+     main = names(student_performance_scale_transform)[2])
+
+hist(student_performance_scale_transform[,3],
+     main = names(student_performance_scale_transform)[3])
+hist(student_performance_scale_transform[,5],
+     main = names(student_performance_scale_transform)[5])
+hist(student_performance_scale_transform[,6],
+     main = names(student_performance_scale_transform)[6])
+hist(student_performance_scale_transform[,7],
+     main = names(student_performance_scale_transform)[7])
+hist(student_performance_scale_transform[,8],
+     main = names(student_performance_scale_transform)[8])
+hist(student_performance_scale_transform[,9],
+     main = names(student_performance_scale_transform)[9])
+hist(student_performance_scale_transform[,10],
+     main = names(student_performance_scale_transform)[10])
+hist(student_performance_scale_transform[,11],
+     main = names(student_performance_scale_transform)[11])
+hist(student_performance_scale_transform[,12],
+     main = names(student_performance_scale_transform)[12])
+hist(student_performance_scale_transform[,13],
+     main = names(student_performance_scale_transform)[13])
+hist(student_performance_scale_transform[,14],
+     main = names(student_performance_scale_transform)[14])
+
+
 ```
 
-...to be continued
+# Applying the Center Data Transform 
+
+```{r Apply Center Data Transform}
+### The Centre Basic Transform on the Student Performance Dataset ----
+# BEFORE
+summary(StudentPerformanceDataset)
+
+boxplot(StudentPerformanceDataset[,2], main = names(StudentPerformanceDataset)[2])
+boxplot(StudentPerformanceDataset[,4], main = names(StudentPerformanceDataset)[3])
+boxplot(StudentPerformanceDataset[,5], main = names(StudentPerformanceDataset)[5])
+boxplot(StudentPerformanceDataset[,6], main = names(StudentPerformanceDataset)[6])
+boxplot(StudentPerformanceDataset[,7], main = names(StudentPerformanceDataset)[7])
+boxplot(StudentPerformanceDataset[,8], main = names(StudentPerformanceDataset)[8])
+boxplot(StudentPerformanceDataset[,9], main = names(StudentPerformanceDataset)[9])
+boxplot(StudentPerformanceDataset[,10], main = names(StudentPerformanceDataset)[10])
+boxplot(StudentPerformanceDataset[,11], main = names(StudentPerformanceDataset)[11])
+boxplot(StudentPerformanceDataset[,12], main = names(StudentPerformanceDataset)[12])
+boxplot(StudentPerformanceDataset[,13], main = names(StudentPerformanceDataset)[13])
+boxplot(StudentPerformanceDataset[,14], main = names(StudentPerformanceDataset)[14])
+
+model_of_the_transform <- preProcess(StudentPerformanceDataset, method = c("center"))
+print(model_of_the_transform)
+student_performance_center_transform <- predict(model_of_the_transform, # nolint
+                                                StudentPerformanceDataset)
+
+# AFTER
+summary(student_performance_center_transform)
+
+boxplot(student_performance_center_transform[,2],
+        main = names(student_performance_center_transform)[2])
+boxplot(student_performance_center_transform[,3],
+        main = names(student_performance_center_transform)[3])
+boxplot(student_performance_center_transform[,5],
+        main = names(student_performance_center_transform)[5])
+boxplot(student_performance_center_transform[,6],
+        main = names(student_performance_center_transform)[6])
+boxplot(student_performance_center_transform[,7],
+        main = names(student_performance_center_transform)[7])
+boxplot(student_performance_center_transform[,8],
+        main = names(student_performance_center_transform)[8])
+boxplot(student_performance_center_transform[,9],
+        main = names(student_performance_center_transform)[9])
+boxplot(student_performance_center_transform[,10],
+        main = names(student_performance_center_transform)[10])
+boxplot(student_performance_center_transform[,11],
+        main = names(student_performance_center_transform)[11])
+boxplot(student_performance_center_transform[,12],
+        main = names(student_performance_center_transform)[12])
+boxplot(student_performance_center_transform[,13],
+        main = names(student_performance_center_transform)[13])
+boxplot(student_performance_center_transform[,14],
+        main = names(student_performance_center_transform)[14])
+
+
+```
+# Standardization of  the Student Performance Dataset
+```{r Standardize Data Transform}
+### The Standardize Basic Transform on the Student Performance Dataset ----
+# BEFORE
+summary(StudentPerformanceDataset)
+
+
+model_of_the_transform <- preProcess(StudentPerformanceDataset,
+                                     method = c("scale", "center"))
+print(model_of_the_transform)
+student_performance_standardize_transform <- predict(model_of_the_transform, # nolint
+                                                StudentPerformanceDataset)
+
+# AFTER
+summary(student_performance_standardize_transform)
+sapply(student_performance_standardize_transform, sd)
+
+
+
+
+```
+# Normalized the Dataset ensuring the numerical values between 0 and 1 
+```{r Normalize Data Transform}
+# Normalizing a dataset implies ensuring the numerical data are
+# between [0, 1] (inclusive).
+
+### The Normalize Transform on the Student Performance Dataset ----
+summary(StudentPerformanceDataset)
+model_of_the_transform <- preProcess(StudentPerformanceDataset, method = c("range"))
+print(model_of_the_transform)
+student_performance_normalize_transform <- predict(model_of_the_transform, # nolint
+                                                   StudentPerformanceDataset)
+summary(student_performance_normalize_transform)
+
+
+
+
+```
+# Applying the Box Cox Data Transform 
+
+```{r Applying Box Cox Data Transform}
+### Box-Cox Power Transform on the Student Performance Dataset ----
+# BEFORE
+summary(StudentPerformanceDataset)
+StudentPerformanceDataset <- as.data.frame(StudentPerformanceDataset)
+
+
+#Calculate the skewness before the Box-Cox transform
+
+sapply(StudentPerformanceDataset[, 7:13], skewness, type = 2)
+
+#Plot a histogram to view the skewness before the Box-Cox transform
+
+
+hist(StudentPerformanceDataset[, 7], main = names(StudentPerformanceDataset)[7])
+hist(StudentPerformanceDataset[, 8], main = names(StudentPerformanceDataset)[8])
+hist(StudentPerformanceDataset[, 9], main = names(StudentPerformanceDataset)[9])
+hist(StudentPerformanceDataset[, 10], main = names(StudentPerformanceDataset)[10])
+hist(StudentPerformanceDataset[, 11], main = names(StudentPerformanceDataset)[11])
+hist(StudentPerformanceDataset[, 12], main = names(StudentPerformanceDataset)[12])
+hist(StudentPerformanceDataset[, 13], main = names(StudentPerformanceDataset)[13])
+
+
+StudentPerformanceDataset <- as.data.frame(StudentPerformanceDataset)  # Convert to data frame if needed
+preprocessed_data <- preProcess(StudentPerformanceDataset)
+
+model_of_the_transform <- preProcess(StudentPerformanceDataset, method = c("BoxCox"))
+print(model_of_the_transform)
+
+
+student_performance_box_cox_transform <- predict(model_of_the_transform, # nolint
+                                            StudentPerformanceDataset)
+
+# AFTER
+summary(student_performance_box_cox_transform)
+StudentPerformanceDataset <- as.data.frame(StudentPerformanceDataset)
+
+
+# Calculate the skewness after the Box-Cox transform
+sapply(student_performance_box_cox_transform[, 7:13],  skewness, type = 2)
+
+#Plot a histogram to view the skewness after the Box-Cox transform
+
+
+hist(student_performance_box_cox_transform[, 7],
+     main = names(student_performance_box_cox_transform)[7])
+
+hist(student_performance_box_cox_transform[,8],
+     main = names(student_performance_box_cox_transform)[8])
+
+hist(student_performance_box_cox_transform[,9],
+     main = names(student_performance_box_cox_transform)[9])
+
+hist(student_performance_box_cox_transform[,10],
+     main = names(student_performance_box_cox_transform)[10])
+
+hist(student_performance_box_cox_transform[,11],
+     main = names(student_performance_box_cox_transform)[11])
+
+hist(student_performance_box_cox_transform[,12],
+     main = names(student_performance_box_cox_transform)[12])
+
+hist(student_performance_box_cox_transform[,13],
+     main = names(student_performance_box_cox_transform)[13])
+
+
+
+
+
+
+```
+# We also tried applying the Yeo Johnson Power Transform on the Dataset
+```{r Applying Yeo Johnson Power Transform}
+### Yeo-Johnson Power Transform on the Boston Housing Dataset ----
+# BEFORE
+summary(StudentPerformanceDataset)
+
+# Calculate the skewness before the Yeo-Johnson transform
+sapply(StudentPerformanceDataset [,7:13],  skewness, type = 2)
+
+StudentPerformanceDataset <- as.data.frame(StudentPerformanceDataset)  # Convert to data frame if needed
+preprocessed_data <- preProcess(StudentPerformanceDataset)
+
+# Plot a histogram to view the skewness before the Box-Cox transform
+hist(StudentPerformanceDataset[,7], main = names(StudentPerformanceDataset)[7])
+hist(StudentPerformanceDataset[,8], main = names(StudentPerformanceDataset)[8])
+hist(StudentPerformanceDataset[,9], main = names(StudentPerformanceDataset)[9])
+hist(StudentPerformanceDataset[,10], main = names(StudentPerformanceDataset)[10])
+hist(StudentPerformanceDataset[,11], main = names(StudentPerformanceDataset)[11])
+hist(StudentPerformanceDataset[,12], main = names(StudentPerformanceDataset)[12])
+hist(StudentPerformanceDataset[,13], main = names(StudentPerformanceDataset)[13])
+
+
+model_of_the_transform <- preProcess(StudentPerformanceDataset, method = c("YeoJohnson"))
+print(model_of_the_transform)
+student_performance_yeo_johnson_transform <- predict(model_of_the_transform, # nolint
+                                                     StudentPerformanceDataset  )
+
+# AFTER
+summary(student_performance_yeo_johnson_transform, is.numeric)
+
+# Calculate the skewness after the Yeo-Johnson transform
+sapply(student_performance_yeo_johnson_transform[,7:13] ,skewness, type = 2)
+
+# Plot a histogram to view the skewness after the Box-Cox transform
+hist(student_performance_yeo_johnson_transform[,7],
+     main = names(student_performance_yeo_johnson_transform)[7])
+hist(student_performance_yeo_johnson_transform[,8],
+     main = names(student_performance_yeo_johnson_transform)[8])
+hist(student_performance_yeo_johnson_transform[,9],
+     main = names(student_performance_yeo_johnson_transform)[9])
+hist(student_performance_yeo_johnson_transform[,10],
+     main = names(student_performance_yeo_johnson_transform)[10])
+hist(student_performance_yeo_johnson_transform[,11],
+     main = names(student_performance_yeo_johnson_transform)[11])
+hist(student_performance_yeo_johnson_transform[,12],
+     main = names(student_performance_yeo_johnson_transform)[12])
+hist(student_performance_yeo_johnson_transform[,13],
+     main = names(student_performance_yeo_johnson_transform)[13])
+
+
+### Yeo-Johnson Power Transform on the Student Performance ----
+# BEFORE
+summary(student_performance_yeo_johnson_transform)
+
+# Calculate the skewness before the Yeo-Johnson transform
+sapply(student_performance_yeo_johnson_transform[,7:13],  skewness, type = 2)
+sapply(student_performance_yeo_johnson_transform[,7:13], sd)
+
+model_of_the_transform <- preProcess(student_performance_yeo_johnson_transform,
+                                     method = c("YeoJohnson"))
+print(model_of_the_transform)
+student_performance_yeo_johnson_transform <- predict(model_of_the_transform, # nolint
+                                                     student_performance_yeo_johnson_transform)
+
+# AFTER
+summary(student_performance_yeo_johnson_transform)
+
+# Calculate the skewness after the Yeo-Johnson transform
+sapply(student_performance_yeo_johnson_transform[7:13],  skewness, type = 2)
+sapply(student_performance_yeo_johnson_transform[7:13], sd)
+
+
+
+
+```
+
+

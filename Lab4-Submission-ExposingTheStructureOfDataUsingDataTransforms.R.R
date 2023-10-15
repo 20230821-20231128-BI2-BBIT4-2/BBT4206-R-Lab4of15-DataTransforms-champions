@@ -351,6 +351,8 @@ hist(student_performance_scale_transform[,14],
 ### The Centre Basic Transform on the Student Performance Dataset ----
 # BEFORE
 summary(StudentPerformanceDataset)
+StudentPerformanceDataset <- as.data.frame(StudentPerformanceDataset)
+
 
 boxplot(StudentPerformanceDataset[,2], main = names(StudentPerformanceDataset)[2])
 boxplot(StudentPerformanceDataset[,4], main = names(StudentPerformanceDataset)[3])
