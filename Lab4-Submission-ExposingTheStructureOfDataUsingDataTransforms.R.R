@@ -193,36 +193,11 @@ if (require("FactoMineR")) {
 }
 
 ## STEP 2. Load the Datasets ----
+ ##Load the students Performance Dataset
 
-### The Boston Housing Dataset ----
-# Execute the following to load the “BostonHousing” dataset which is offered
-# in the "mlbench" package:
-data("BostonHousing")
+library(readr)
+StudentPerformanceDataset <- read_csv("data/StudentPerformanceDataset.csv")
 
-### Crop Dataset ----
-# Execute the following to load the downloaded Crop dataset:
-crop_dataset <- read_csv("data/crop.data.csv",
-  col_types = cols(
-    density = col_factor(levels = c("1", "2")),
-    block = col_factor(levels = c("1", "2", "3", "4")),
-    fertilizer = col_factor(levels = c("1", "2", "3"))
-  )
-)
-
-### Iris Dataset ----
-# Execute the following to load the downloaded Iris dataset:
-iris_dataset <- read.csv("data/iris.data", header = FALSE,
-                         stringsAsFactors = TRUE)
-# This time, we name the attributes of the Iris Dataset as follows:
-names(iris_dataset) <- c("sepal length in cm", "sepal width in cm",
-                         "petal length in cm", "petal width in cm", "class")
-
-### The Pima Indians Diabetes Dataset ----
-# Execute the following to load the "Pima Indians Diabetes" dataset from the
-# mlbench package:
-data("PimaIndiansDiabetes")
-
-# Scale Data Transform ----
 
 ## STEP 3. Apply a Scale Data Transform ----
 # The scale data transform is useful for scaling data that has a Gaussian
@@ -259,72 +234,70 @@ data("PimaIndiansDiabetes")
 
 # We use the "preProcess()" function in the caret package
 
-### The Scale Basic Transform on the Boston Housing Dataset ----
+### The Scale Basic Transform on the Student Performance Dataset ----
 # BEFORE
-summary(BostonHousing)
-hist(BostonHousing[, 1], main = names(BostonHousing)[1])
-hist(BostonHousing[, 2], main = names(BostonHousing)[2])
-hist(BostonHousing[, 3], main = names(BostonHousing)[3])
-hist(BostonHousing[, 5], main = names(BostonHousing)[5])
-hist(BostonHousing[, 6], main = names(BostonHousing)[6])
-hist(BostonHousing[, 7], main = names(BostonHousing)[7])
-hist(BostonHousing[, 8], main = names(BostonHousing)[8])
-hist(BostonHousing[, 9], main = names(BostonHousing)[9])
-hist(BostonHousing[, 10], main = names(BostonHousing)[10])
-hist(BostonHousing[, 11], main = names(BostonHousing)[11])
-hist(BostonHousing[, 12], main = names(BostonHousing)[12])
-hist(BostonHousing[, 13], main = names(BostonHousing)[13])
-hist(BostonHousing[, 14], main = names(BostonHousing)[14])
+class(StudentPerformanceDataset)
+summary(StudentPerformanceDataset)
+colnames(StudentPerformanceDataset)
+StudentPerformanceDataset <- as.data.frame(StudentPerformanceDataset)
 
-model_of_the_transform <- preProcess(BostonHousing, method = c("scale"))
+
+hist(StudentPerformanceDataset[,2], main = names(StudentPerformanceDataset)[2])
+hist(StudentPerformanceDataset[,3], main = names(StudentPerformanceDataset)[3])
+hist(StudentPerformanceDataset[,4], main = names(StudentPerformanceDataset)[5])
+hist(StudentPerformanceDataset[,5], main = names(StudentPerformanceDataset)[6])
+hist(StudentPerformanceDataset[,6], main = names(StudentPerformanceDataset)[7])
+hist(StudentPerformanceDataset[,7], main = names(StudentPerformanceDataset)[8])
+hist(StudentPerformanceDataset[,8], main = names(StudentPerformanceDataset)[9])
+hist(StudentPerformanceDataset[,9], main = names(StudentPerformanceDataset)[10])
+hist(StudentPerformanceDataset[,10], main = names(StudentPerformanceDataset)[11])
+hist(StudentPerformanceDataset[,11], main = names(StudentPerformanceDataset)[12])
+hist(StudentPerformanceDataset[,12], main = names(StudentPerformanceDataset)[13])
+hist(StudentPerformanceDataset[,13], main = names(StudentPerformanceDataset)[14])
+
+student_performance_scale_transform <- as.data.frame(StudentPerformanceDataset)  # Convert to data frame if needed
+preprocessed_data <- preProcess(StudentPerformanceDataset)
+
+model_of_the_transform <- preProcess(StudentPerformanceDataset, method = c("scale"))
 print(model_of_the_transform)
-boston_housing_scale_transform <- predict(model_of_the_transform,
-                                          BostonHousing)
+student_performance_scale_transform <- predict(model_of_the_transform,
+                                               StudentPerformanceDataset)
 # AFTER
-summary(boston_housing_scale_transform)
-hist(boston_housing_scale_transform[, 1],
-     main = names(boston_housing_scale_transform)[1])
-hist(boston_housing_scale_transform[, 2],
-     main = names(boston_housing_scale_transform)[2])
-hist(boston_housing_scale_transform[, 3],
-     main = names(boston_housing_scale_transform)[3])
-hist(boston_housing_scale_transform[, 5],
-     main = names(boston_housing_scale_transform)[5])
-hist(boston_housing_scale_transform[, 6],
-     main = names(boston_housing_scale_transform)[6])
-hist(boston_housing_scale_transform[, 7],
-     main = names(boston_housing_scale_transform)[7])
-hist(boston_housing_scale_transform[, 8],
-     main = names(boston_housing_scale_transform)[8])
-hist(boston_housing_scale_transform[, 9],
-     main = names(boston_housing_scale_transform)[9])
-hist(boston_housing_scale_transform[, 10],
-     main = names(boston_housing_scale_transform)[10])
-hist(boston_housing_scale_transform[, 11],
-     main = names(boston_housing_scale_transform)[11])
-hist(boston_housing_scale_transform[, 12],
-     main = names(boston_housing_scale_transform)[12])
-hist(boston_housing_scale_transform[, 13],
-     main = names(boston_housing_scale_transform)[13])
-hist(boston_housing_scale_transform[, 14],
-     main = names(boston_housing_scale_transform)[14])
+summary(student_performance_scale_transform)
 
-### The Scale Basic Transform on the Crop Dataset ----
-# BEFORE
-summary(crop_dataset)
-# The code below converts column number 4 into unlisted and numeric data first
-# so that a histogram can be plotted. Further reading:
-crop_dataset_yield <- as.numeric(unlist(crop_dataset[, 4]))
-hist(crop_dataset_yield, main = names(crop_dataset)[4])
 
-model_of_the_transform <- preProcess(crop_dataset, method = c("scale"))
-print(model_of_the_transform)
-crop_data_scale_transform <- predict(model_of_the_transform, crop_dataset)
+student_performance_scale_transform <- as.data.frame(student_performance_scale_transform)  # Convert to data frame if needed
+preprocessed_data <- preProcess(student_performance_scale_transform)
 
-# AFTER
-summary(crop_data_scale_transform)
-crop_dataset_yield <- as.numeric(unlist(crop_data_scale_transform[, 4]))
-hist(crop_dataset_yield, main = names(crop_data_scale_transform)[4])
+hist(student_performance_scale_transform[,1],
+     main = names(student_performance_scale_transform)[1])
+
+hist(student_performance_scale_transform[,2],
+     main = names(student_performance_scale_transform)[2])
+
+hist(student_performance_scale_transform[,3],
+     main = names(student_performance_scale_transform)[3])
+hist(student_performance_scale_transform[,5],
+     main = names(student_performance_scale_transform)[5])
+hist(student_performance_scale_transform[,6],
+     main = names(student_performance_scale_transform)[6])
+hist(student_performance_scale_transform[,7],
+     main = names(student_performance_scale_transform)[7])
+hist(student_performance_scale_transform[,8],
+     main = names(student_performance_scale_transform)[8])
+hist(student_performance_scale_transform[,9],
+     main = names(student_performance_scale_transform)[9])
+hist(student_performance_scale_transform[,10],
+     main = names(student_performance_scale_transform)[10])
+hist(student_performance_scale_transform[,11],
+     main = names(student_performance_scale_transform)[11])
+hist(student_performance_scale_transform[,12],
+     main = names(student_performance_scale_transform)[12])
+hist(student_performance_scale_transform[,13],
+     main = names(student_performance_scale_transform)[13])
+hist(student_performance_scale_transform[,14],
+     main = names(student_performance_scale_transform)[14])
+
 
 # Center Data Transform ----
 
@@ -375,78 +348,59 @@ hist(crop_dataset_yield, main = names(crop_data_scale_transform)[4])
 # involved in the interaction can help in reducing multicollinearity and
 # improve the interpretation of interaction effects.
 
-### The Centre Basic Transform on the Boston Housing Dataset ----
+### The Centre Basic Transform on the Student Performance Dataset ----
 # BEFORE
-summary(BostonHousing)
-boxplot(BostonHousing[, 1], main = names(BostonHousing)[1])
-boxplot(BostonHousing[, 2], main = names(BostonHousing)[2])
-boxplot(BostonHousing[, 3], main = names(BostonHousing)[3])
-boxplot(BostonHousing[, 5], main = names(BostonHousing)[5])
-boxplot(BostonHousing[, 6], main = names(BostonHousing)[6])
-boxplot(BostonHousing[, 7], main = names(BostonHousing)[7])
-boxplot(BostonHousing[, 8], main = names(BostonHousing)[8])
-boxplot(BostonHousing[, 9], main = names(BostonHousing)[9])
-boxplot(BostonHousing[, 10], main = names(BostonHousing)[10])
-boxplot(BostonHousing[, 11], main = names(BostonHousing)[11])
-boxplot(BostonHousing[, 12], main = names(BostonHousing)[12])
-boxplot(BostonHousing[, 13], main = names(BostonHousing)[13])
-boxplot(BostonHousing[, 14], main = names(BostonHousing)[14])
+summary(StudentPerformanceDataset)
 
-model_of_the_transform <- preProcess(BostonHousing, method = c("center"))
+boxplot(StudentPerformanceDataset[,2], main = names(StudentPerformanceDataset)[2])
+boxplot(StudentPerformanceDataset[,4], main = names(StudentPerformanceDataset)[3])
+boxplot(StudentPerformanceDataset[,5], main = names(StudentPerformanceDataset)[5])
+boxplot(StudentPerformanceDataset[,6], main = names(StudentPerformanceDataset)[6])
+boxplot(StudentPerformanceDataset[,7], main = names(StudentPerformanceDataset)[7])
+boxplot(StudentPerformanceDataset[,8], main = names(StudentPerformanceDataset)[8])
+boxplot(StudentPerformanceDataset[,9], main = names(StudentPerformanceDataset)[9])
+boxplot(StudentPerformanceDataset[,10], main = names(StudentPerformanceDataset)[10])
+boxplot(StudentPerformanceDataset[,11], main = names(StudentPerformanceDataset)[11])
+boxplot(StudentPerformanceDataset[,12], main = names(StudentPerformanceDataset)[12])
+boxplot(StudentPerformanceDataset[,13], main = names(StudentPerformanceDataset)[13])
+boxplot(StudentPerformanceDataset[,14], main = names(StudentPerformanceDataset)[14])
+
+model_of_the_transform <- preProcess(StudentPerformanceDataset, method = c("center"))
 print(model_of_the_transform)
-boston_housing_center_transform <- predict(model_of_the_transform, # nolint
-                                           BostonHousing)
+student_performance_center_transform <- predict(model_of_the_transform, # nolint
+                                                StudentPerformanceDataset)
 
 # AFTER
-summary(boston_housing_center_transform)
-boxplot(boston_housing_center_transform[, 1],
-        main = names(boston_housing_center_transform)[1])
-boxplot(boston_housing_center_transform[, 2],
-        main = names(boston_housing_center_transform)[2])
-boxplot(boston_housing_center_transform[, 3],
-        main = names(boston_housing_center_transform)[3])
-boxplot(boston_housing_center_transform[, 5],
-        main = names(boston_housing_center_transform)[5])
-boxplot(boston_housing_center_transform[, 6],
-        main = names(boston_housing_center_transform)[6])
-boxplot(boston_housing_center_transform[, 7],
-        main = names(boston_housing_center_transform)[7])
-boxplot(boston_housing_center_transform[, 8],
-        main = names(boston_housing_center_transform)[8])
-boxplot(boston_housing_center_transform[, 9],
-        main = names(boston_housing_center_transform)[9])
-boxplot(boston_housing_center_transform[, 10],
-        main = names(boston_housing_center_transform)[10])
-boxplot(boston_housing_center_transform[, 11],
-        main = names(boston_housing_center_transform)[11])
-boxplot(boston_housing_center_transform[, 12],
-        main = names(boston_housing_center_transform)[12])
-boxplot(boston_housing_center_transform[, 13],
-        main = names(boston_housing_center_transform)[13])
-boxplot(boston_housing_center_transform[, 14],
-        main = names(boston_housing_center_transform)[14])
+summary(student_performance_center_transform)
 
-### The Centre Basic Transform on the Crop Dataset ----
-summary(crop_dataset)
-model_of_the_transform <- preProcess(crop_dataset, method = c("center"))
-print(model_of_the_transform)
-crop_data_center_transform <- predict(model_of_the_transform, crop_dataset)
-summary(crop_data_center_transform)
+boxplot(student_performance_center_transform[,2],
+        main = names(student_performance_center_transform)[2])
+boxplot(student_performance_center_transform[,3],
+        main = names(student_performance_center_transform)[3])
+boxplot(student_performance_center_transform[,5],
+        main = names(student_performance_center_transform)[5])
+boxplot(student_performance_center_transform[,6],
+        main = names(student_performance_center_transform)[6])
+boxplot(student_performance_center_transform[,7],
+        main = names(student_performance_center_transform)[7])
+boxplot(student_performance_center_transform[,8],
+        main = names(student_performance_center_transform)[8])
+boxplot(student_performance_center_transform[,9],
+        main = names(student_performance_center_transform)[9])
+boxplot(student_performance_center_transform[,10],
+        main = names(student_performance_center_transform)[10])
+boxplot(student_performance_center_transform[,11],
+        main = names(student_performance_center_transform)[11])
+boxplot(student_performance_center_transform[,12],
+        main = names(student_performance_center_transform)[12])
+boxplot(student_performance_center_transform[,13],
+        main = names(student_performance_center_transform)[13])
+boxplot(student_performance_center_transform[,14],
+        main = names(student_performance_center_transform)[14])
 
-### The Centre Basic Transform on the Iris Dataset ----
-summary(iris_dataset)
-model_of_the_transform <- preProcess(iris_dataset, method = c("center"))
-print(model_of_the_transform)
-iris_dataset_center_transform <- predict(model_of_the_transform, iris_dataset)
-summary(iris_dataset_center_transform)
 
-### The Centre Basic Transform on the Pima Indians Diabetes Dataset ----
-summary(PimaIndiansDiabetes)
-model_of_the_transform <- preProcess(PimaIndiansDiabetes, method = c("center"))
-print(model_of_the_transform)
-pima_indians_diabetes_center_transform <- predict(model_of_the_transform, # nolint
-                                                  PimaIndiansDiabetes)
-summary(pima_indians_diabetes_center_transform)
+
+
 
 # Standardize Data Transform ----
 ## STEP 5. Apply a Standardize Data Transform ----
@@ -505,63 +459,22 @@ summary(pima_indians_diabetes_center_transform)
 # required. The decision should be made based on the context and the nature of
 # the data.
 
-### The Standardize Basic Transform on the Boston Housing Dataset ----
+### The Standardize Basic Transform on the Student Performance Dataset ----
 # BEFORE
-summary(BostonHousing)
-sapply(BostonHousing[, -4], sd)
+summary(StudentPerformanceDataset)
 
-model_of_the_transform <- preProcess(BostonHousing,
+
+model_of_the_transform <- preProcess(StudentPerformanceDataset,
                                      method = c("scale", "center"))
 print(model_of_the_transform)
-boston_housing_standardize_transform <- predict(model_of_the_transform, # nolint
-                                                BostonHousing)
+student_performance_standardize_transform <- predict(model_of_the_transform, # nolint
+                                                StudentPerformanceDataset)
 
 # AFTER
-summary(boston_housing_standardize_transform)
-sapply(boston_housing_standardize_transform[, -4], sd)
+summary(student_performance_standardize_transform)
+sapply(student_performance_standardize_transform, sd)
 
-### The Standardize Basic Transform on the Crop Dataset ----
-# BEFORE
-summary(crop_dataset)
-sapply(crop_dataset[, 4], sd)
-model_of_the_transform <- preProcess(crop_dataset,
-                                     method = c("scale", "center"))
-print(model_of_the_transform)
-crop_data_standardize_transform <- predict(model_of_the_transform, crop_dataset) # nolint
 
-# AFTER
-summary(crop_data_standardize_transform)
-sapply(crop_data_standardize_transform[, 4], sd)
-
-### The Standardize Basic Transform on the Iris Dataset ----
-# BEFORE
-summary(iris_dataset)
-sapply(iris_dataset[, 1:4], sd)
-
-model_of_the_transform <- preProcess(iris_dataset,
-                                     method = c("scale", "center"))
-print(model_of_the_transform)
-iris_dataset_standardize_transform <- predict(model_of_the_transform, # nolint
-                                              iris_dataset)
-
-# AFTER
-summary(iris_dataset_standardize_transform)
-sapply(iris_dataset_standardize_transform[, 1:4], sd)
-
-### The Standardize Basic Transform on the Pima Indians Diabetes Dataset ----
-# BEFORE
-summary(PimaIndiansDiabetes)
-sapply(PimaIndiansDiabetes[, 1:8], sd)
-
-model_of_the_transform <- preProcess(PimaIndiansDiabetes,
-                                     method = c("scale", "center"))
-print(model_of_the_transform)
-pima_indians_diabetes_standardize_transform <- predict(model_of_the_transform, # nolint
-                                                       PimaIndiansDiabetes)
-
-# AFTER
-summary(pima_indians_diabetes_standardize_transform)
-sapply(pima_indians_diabetes_standardize_transform[, 1:8], sd)
 
 # Normalize Data Transform ----
 
@@ -625,36 +538,13 @@ sapply(pima_indians_diabetes_standardize_transform[, 1:8], sd)
 # necessary, especially when the data is already on a compatible scale for the
 # intended analysis.
 
-### The Normalize Transform on the Boston Housing Dataset ----
-summary(BostonHousing)
-model_of_the_transform <- preProcess(BostonHousing, method = c("range"))
+### The Normalize Transform on the Student Performance Dataset ----
+summary(StudentPerformanceDataset)
+model_of_the_transform <- preProcess(StudentPerformanceDataset, method = c("range"))
 print(model_of_the_transform)
-boston_housing_normalize_transform <- predict(model_of_the_transform, # nolint
-                                              BostonHousing)
-summary(boston_housing_normalize_transform)
-
-### The Normalize Transform on the Crop Dataset ----
-summary(crop_dataset)
-model_of_the_transform <- preProcess(crop_dataset, method = c("range"))
-print(model_of_the_transform)
-crop_data_normalize_transform <- predict(model_of_the_transform, crop_dataset)
-summary(crop_data_normalize_transform)
-
-### The Normalize Transform on the Iris Dataset ----
-summary(iris_dataset)
-model_of_the_transform <- preProcess(iris_dataset, method = c("range"))
-print(model_of_the_transform)
-iris_dataset_normalize_transform <- predict(model_of_the_transform, # nolint
-                                            iris_dataset)
-summary(iris_dataset_normalize_transform)
-
-### The Normalize Transform on the Pima Indians Diabetes Dataset ----
-summary(PimaIndiansDiabetes)
-model_of_the_transform <- preProcess(PimaIndiansDiabetes, method = c("range"))
-print(model_of_the_transform)
-pima_indians_diabetes_normalize_transform <- predict(model_of_the_transform, # nolint
-                                                     PimaIndiansDiabetes)
-summary(pima_indians_diabetes_normalize_transform)
+student_performance_normalize_transform <- predict(model_of_the_transform, # nolint
+                                                   StudentPerformanceDataset)
+summary(student_performance_normalize_transform)
 
 
 # Box-Cox Power Transform ----
@@ -674,156 +564,72 @@ summary(pima_indians_diabetes_normalize_transform)
 # distribution of an attribute and making the attribute have a more
 # Gaussian-like distribution.
 
-### Box-Cox Power Transform on the Boston Housing Dataset ----
+### Box-Cox Power Transform on the Student Performance Dataset ----
 # BEFORE
-summary(BostonHousing)
+summary(StudentPerformanceDataset)
 
 #Calculate the skewness before the Box-Cox transform
-sapply(BostonHousing[, -4],  skewness, type = 2)
+
+
+sapply(StudentPerformanceDataset[,7:13],  skewness, type = 2)
 
 #Plot a histogram to view the skewness before the Box-Cox transform
-hist(BostonHousing[, 1], main = names(BostonHousing)[1])
-hist(BostonHousing[, 2], main = names(BostonHousing)[2])
-hist(BostonHousing[, 3], main = names(BostonHousing)[3])
-hist(BostonHousing[, 5], main = names(BostonHousing)[5])
-hist(BostonHousing[, 6], main = names(BostonHousing)[6])
-hist(BostonHousing[, 7], main = names(BostonHousing)[7])
-hist(BostonHousing[, 8], main = names(BostonHousing)[8])
-hist(BostonHousing[, 9], main = names(BostonHousing)[9])
-hist(BostonHousing[, 10], main = names(BostonHousing)[10])
-hist(BostonHousing[, 11], main = names(BostonHousing)[11])
-hist(BostonHousing[, 12], main = names(BostonHousing)[12])
-hist(BostonHousing[, 13], main = names(BostonHousing)[13])
-hist(BostonHousing[, 14], main = names(BostonHousing)[14])
 
-model_of_the_transform <- preProcess(BostonHousing, method = c("BoxCox"))
+hist(StudentPerformanceDataset[, 7], main = names(StudentPerformanceDataset)[7])
+hist(StudentPerformanceDataset[, 8], main = names(StudentPerformanceDataset)[8])
+hist(StudentPerformanceDataset[, 9], main = names(StudentPerformanceDataset)[9])
+hist(StudentPerformanceDataset[, 10], main = names(StudentPerformanceDataset)[10])
+hist(StudentPerformanceDataset[, 11], main = names(StudentPerformanceDataset)[11])
+hist(StudentPerformanceDataset[, 12], main = names(StudentPerformanceDataset)[12])
+hist(StudentPerformanceDataset[, 13], main = names(StudentPerformanceDataset)[13])
+
+
+StudentPerformanceDataset <- as.data.frame(StudentPerformanceDataset)  # Convert to data frame if needed
+preprocessed_data <- preProcess(StudentPerformanceDataset)
+
+model_of_the_transform <- preProcess(StudentPerformanceDataset, method = c("BoxCox"))
 print(model_of_the_transform)
-boston_housing_box_cox_transform <- predict(model_of_the_transform, # nolint
-                                            BostonHousing)
+
+
+student_performance_box_cox_transform <- predict(model_of_the_transform, # nolint
+                                            StudentPerformanceDataset)
 
 # AFTER
-summary(boston_housing_box_cox_transform)
+summary(student_performance_box_cox_transform)
+
+
+
 
 # Calculate the skewness after the Box-Cox transform
-sapply(boston_housing_box_cox_transform[, -4],  skewness, type = 2)
+sapply(student_performance_box_cox_transform[,7:13],  skewness, type = 2)
+
+student_performance_box_cox_transform <- as.numeric(unlist(student_performance_box_cox_transform))
 
 #Plot a histogram to view the skewness after the Box-Cox transform
-hist(boston_housing_box_cox_transform[, 1],
-     main = names(boston_housing_box_cox_transform)[1])
-hist(boston_housing_box_cox_transform[, 2],
-     main = names(boston_housing_box_cox_transform)[2])
-hist(boston_housing_box_cox_transform[, 3],
-     main = names(boston_housing_box_cox_transform)[3])
-hist(boston_housing_box_cox_transform[, 5],
-     main = names(boston_housing_box_cox_transform)[5])
-hist(boston_housing_box_cox_transform[, 6],
-     main = names(boston_housing_box_cox_transform)[6])
-hist(boston_housing_box_cox_transform[, 7],
-     main = names(boston_housing_box_cox_transform)[7])
-hist(boston_housing_box_cox_transform[, 8],
-     main = names(boston_housing_box_cox_transform)[8])
-hist(boston_housing_box_cox_transform[, 9],
-     main = names(boston_housing_box_cox_transform)[9])
-hist(boston_housing_box_cox_transform[, 10],
-     main = names(boston_housing_box_cox_transform)[10])
-hist(boston_housing_box_cox_transform[, 11],
-     main = names(boston_housing_box_cox_transform)[11])
-hist(boston_housing_box_cox_transform[, 12],
-     main = names(boston_housing_box_cox_transform)[12])
-hist(boston_housing_box_cox_transform[, 13],
-     main = names(boston_housing_box_cox_transform)[13])
-hist(boston_housing_box_cox_transform[, 14],
-     main = names(boston_housing_box_cox_transform)[14])
 
-### Box-Cox Power Transform on the Crop Dataset ----
-# BEFORE
-summary(crop_data_standardize_transform)
 
-# Calculate the skewness before the Box-Cox transform
-sapply(crop_data_standardize_transform[, 4],  skewness, type = 2)
-sapply(crop_data_standardize_transform[, 4], sd)
+hist(student_performance_box_cox_transform[,7],
+     main = names(student_performance_box_cox_transform)[7])
 
-model_of_the_transform <- preProcess(crop_data_standardize_transform,
-                                     method = c("BoxCox"))
-print(model_of_the_transform)
-crop_data_box_cox_transform <- predict(model_of_the_transform,
-                                       crop_data_standardize_transform)
+hist(student_performance_box_cox_transform[,8],
+     main = names(student_performance_box_cox_transform)[8])
 
-# AFTER
-summary(crop_data_box_cox_transform)
+hist(student_performance_box_cox_transform[,9],
+     main = names(student_performance_box_cox_transform)[9])
 
-sapply(crop_data_box_cox_transform[, 4],  skewness, type = 2)
-sapply(crop_data_box_cox_transform[, 4], sd)
+hist(student_performance_box_cox_transform[,10],
+     main = names(student_performance_box_cox_transform)[10])
 
-# Calculate the skewness after the Box-Cox transform
-sapply(crop_data_box_cox_transform[, 4],  skewness, type = 2)
-sapply(crop_data_box_cox_transform[, 4], sd)
+hist(student_performance_box_cox_transform[,11],
+     main = names(student_performance_box_cox_transform)[11])
 
-# Notice that none of the attributes in the crop dataset qualify to be
-# transformed using the Box Cox data transform. Yield has negative values
-# after standardization.
+hist(student_performance_box_cox_transform[,12],
+     main = names(student_performance_box_cox_transform)[12])
 
-### Box-Cox Power Transform on the Iris Dataset ----
-# BEFORE
-summary(iris_dataset)
+hist(student_performance_box_cox_transform[,13],
+     main = names(student_performance_box_cox_transform)[13])
 
-# Calculate the skewness before the Box-Cox transform
-sapply(iris_dataset[, 1:4],  skewness, type = 2)
 
-# Plot a histogram to view the skewness before the Box-Cox transform
-par(mfrow = c(1, 4))
-for (i in 1:4) {
-  hist(iris_dataset[, i], main = names(iris_dataset)[i])
-}
-
-Smodel_of_the_transform <- preProcess(iris_dataset, method = c("BoxCox"))
-print(model_of_the_transform)
-
-iris_dataset_box_cox_transform <- predict(model_of_the_transform,
-                                          iris_dataset)
-# AFTER
-summary(iris_dataset_box_cox_transform)
-
-# Calculate the skewness after the Box-Cox transform
-sapply(iris_dataset_box_cox_transform[, 1:4],  skewness, type = 2)
-
-# Plot a histogram to view the skewness after the Box-Cox transform
-par(mfrow = c(1, 4))
-for (i in 1:4) {
-  hist(iris_dataset_box_cox_transform[, i],
-       main = names(iris_dataset_box_cox_transform)[i])
-}
-
-### Box-Cox Power Transform on the Pima Indians Diabetes Dataset ----
-# BEFORE
-summary(PimaIndiansDiabetes)
-
-# Calculate the skewness before the Box-Cox transform
-sapply(PimaIndiansDiabetes[, 1:4],  skewness, type = 2)
-
-# Plot a histogram to view the skewness before the Box-Cox transform
-par(mfrow = c(1, 4))
-for (i in 1:4) {
-  hist(PimaIndiansDiabetes[, i], main = names(PimaIndiansDiabetes)[i])
-}
-
-model_of_the_transform <- preProcess(PimaIndiansDiabetes, method = c("BoxCox"))
-print(model_of_the_transform)
-pima_indians_diabetes_box_cox_transform <- predict(model_of_the_transform, # nolint
-                                                   PimaIndiansDiabetes)
-
-# AFTER
-summary(pima_indians_diabetes_box_cox_transform)
-
-# Calculate the skewness after the Box-Cox transform
-sapply(pima_indians_diabetes_box_cox_transform[, 1:8],  skewness, type = 2)
-
-# Plot a histogram to view the skewness after the Box-Cox transform
-par(mfrow = c(1, 8))
-for (i in 1:8) {
-  hist(pima_indians_diabetes_box_cox_transform[, i],
-       main = names(pima_indians_diabetes_box_cox_transform)[i])
-}
 
 
 # Yeo-Johnson Power Transform ----
@@ -837,151 +643,77 @@ for (i in 1:8) {
 
 ### Yeo-Johnson Power Transform on the Boston Housing Dataset ----
 # BEFORE
-summary(BostonHousing)
+summary(StudentPerformanceDataset)
 
 # Calculate the skewness before the Yeo-Johnson transform
-sapply(BostonHousing[, -4],  skewness, type = 2)
+sapply(StudentPerformanceDataset [,7:13],  skewness, type = 2)
+
+StudentPerformanceDataset <- as.data.frame(StudentPerformanceDataset)  # Convert to data frame if needed
+preprocessed_data <- preProcess(StudentPerformanceDataset)
 
 # Plot a histogram to view the skewness before the Box-Cox transform
-hist(BostonHousing[, 1], main = names(BostonHousing)[1])
-hist(BostonHousing[, 2], main = names(BostonHousing)[2])
-hist(BostonHousing[, 3], main = names(BostonHousing)[3])
-hist(BostonHousing[, 5], main = names(BostonHousing)[5])
-hist(BostonHousing[, 6], main = names(BostonHousing)[6])
-hist(BostonHousing[, 7], main = names(BostonHousing)[7])
-hist(BostonHousing[, 8], main = names(BostonHousing)[8])
-hist(BostonHousing[, 9], main = names(BostonHousing)[9])
-hist(BostonHousing[, 10], main = names(BostonHousing)[10])
-hist(BostonHousing[, 11], main = names(BostonHousing)[11])
-hist(BostonHousing[, 12], main = names(BostonHousing)[12])
-hist(BostonHousing[, 13], main = names(BostonHousing)[13])
-hist(BostonHousing[, 14], main = names(BostonHousing)[14])
+hist(StudentPerformanceDataset[,7], main = names(StudentPerformanceDataset)[7])
+hist(StudentPerformanceDataset[,8], main = names(StudentPerformanceDataset)[8])
+hist(StudentPerformanceDataset[,9], main = names(StudentPerformanceDataset)[9])
+hist(StudentPerformanceDataset[,10], main = names(StudentPerformanceDataset)[10])
+hist(StudentPerformanceDataset[,11], main = names(StudentPerformanceDataset)[11])
+hist(StudentPerformanceDataset[,12], main = names(StudentPerformanceDataset)[12])
+hist(StudentPerformanceDataset[,13], main = names(StudentPerformanceDataset)[13])
 
-model_of_the_transform <- preProcess(BostonHousing, method = c("YeoJohnson"))
+
+model_of_the_transform <- preProcess(StudentPerformanceDataset, method = c("YeoJohnson"))
 print(model_of_the_transform)
-boston_housing_yeo_johnson_transform <- predict(model_of_the_transform, # nolint
-                                                BostonHousing)
+student_performance_yeo_johnson_transform <- predict(model_of_the_transform, # nolint
+                                                     StudentPerformanceDataset  )
 
 # AFTER
-summary(boston_housing_yeo_johnson_transform)
+summary(student_performance_yeo_johnson_transform, is.numeric)
 
 # Calculate the skewness after the Yeo-Johnson transform
-sapply(boston_housing_yeo_johnson_transform[, -4],  skewness, type = 2)
+sapply(student_performance_yeo_johnson_transform[,7:13] ,skewness, type = 2)
 
 # Plot a histogram to view the skewness after the Box-Cox transform
-hist(boston_housing_yeo_johnson_transform[, 1],
-     main = names(boston_housing_yeo_johnson_transform)[1])
-hist(boston_housing_yeo_johnson_transform[, 2],
-     main = names(boston_housing_yeo_johnson_transform)[2])
-hist(boston_housing_yeo_johnson_transform[, 3],
-     main = names(boston_housing_yeo_johnson_transform)[3])
-hist(boston_housing_yeo_johnson_transform[, 5],
-     main = names(boston_housing_yeo_johnson_transform)[5])
-hist(boston_housing_yeo_johnson_transform[, 6],
-     main = names(boston_housing_yeo_johnson_transform)[6])
-hist(boston_housing_yeo_johnson_transform[, 7],
-     main = names(boston_housing_yeo_johnson_transform)[7])
-hist(boston_housing_yeo_johnson_transform[, 8],
-     main = names(boston_housing_yeo_johnson_transform)[8])
-hist(boston_housing_yeo_johnson_transform[, 9],
-     main = names(boston_housing_yeo_johnson_transform)[9])
-hist(boston_housing_yeo_johnson_transform[, 10],
-     main = names(boston_housing_yeo_johnson_transform)[10])
-hist(boston_housing_yeo_johnson_transform[, 11],
-     main = names(boston_housing_yeo_johnson_transform)[11])
-hist(boston_housing_yeo_johnson_transform[, 12],
-     main = names(boston_housing_yeo_johnson_transform)[12])
-hist(boston_housing_yeo_johnson_transform[, 13],
-     main = names(boston_housing_yeo_johnson_transform)[13])
-hist(boston_housing_yeo_johnson_transform[, 14],
-     main = names(boston_housing_yeo_johnson_transform)[14])
+hist(student_performance_yeo_johnson_transform[,7],
+     main = names(student_performance_yeo_johnson_transform)[7])
+hist(student_performance_yeo_johnson_transform[,8],
+     main = names(student_performance_yeo_johnson_transform)[8])
+hist(student_performance_yeo_johnson_transform[,9],
+     main = names(student_performance_yeo_johnson_transform)[9])
+hist(student_performance_yeo_johnson_transform[,10],
+     main = names(student_performance_yeo_johnson_transform)[10])
+hist(student_performance_yeo_johnson_transform[,11],
+     main = names(student_performance_yeo_johnson_transform)[11])
+hist(student_performance_yeo_johnson_transform[,12],
+     main = names(student_performance_yeo_johnson_transform)[12])
+hist(student_performance_yeo_johnson_transform[,13],
+     main = names(student_performance_yeo_johnson_transform)[13])
 
-### Yeo-Johnson Power Transform on the Crop Dataset ----
+
+### Yeo-Johnson Power Transform on the Student Performance ----
 # BEFORE
-summary(crop_data_standardize_transform)
+summary(student_performance_yeo_johnson_transform)
 
 # Calculate the skewness before the Yeo-Johnson transform
-sapply(crop_data_standardize_transform[, 4],  skewness, type = 2)
-sapply(crop_data_standardize_transform[, 4], sd)
+sapply(student_performance_yeo_johnson_transform[,7:13],  skewness, type = 2)
+sapply(student_performance_yeo_johnson_transform[,7:13], sd)
 
-model_of_the_transform <- preProcess(crop_data_standardize_transform,
+model_of_the_transform <- preProcess(student_performance_yeo_johnson_transform,
                                      method = c("YeoJohnson"))
 print(model_of_the_transform)
-crop_data_yeo_johnson_transform <- predict(model_of_the_transform, # nolint
-                                           crop_data_standardize_transform)
+student_performance_yeo_johnson_transform <- predict(model_of_the_transform, # nolint
+                                                     student_performance_yeo_johnson_transform)
 
 # AFTER
-summary(crop_data_yeo_johnson_transform)
+summary(student_performance_yeo_johnson_transform)
 
 # Calculate the skewness after the Yeo-Johnson transform
-sapply(crop_data_yeo_johnson_transform[, 4],  skewness, type = 2)
-sapply(crop_data_yeo_johnson_transform[, 4], sd)
+sapply(student_performance_yeo_johnson_transform[7:13],  skewness, type = 2)
+sapply(student_performance_yeo_johnson_transform[7:13], sd)
 
 # Notice that unlike the Box-Cox data transform, the Yeo-Johnson data
 # transform considers 1 of the attributes (yield) as qualified to be
 # transformed using the Yeo-Johnson transform. This is despite Yield
 # having negative values after standardization.
-
-### Yeo-Johnson Power Transform on the Iris Dataset ----
-# BEFORE
-summary(iris_dataset)
-
-# Calculate the skewness before the Yeo-Johnson transform
-sapply(iris_dataset[, 1:4],  skewness, type = 2)
-
-# Plot a histogram to view the skewness before the Yeo-Johnson transform
-par(mfrow = c(1, 4))
-for (i in 1:4) {
-  hist(iris_dataset[, i], main = names(iris_dataset)[i])
-}
-
-model_of_the_transform <- preProcess(iris_dataset, method = c("YeoJohnson"))
-print(model_of_the_transform)
-iris_dataset_yeo_johnson_transform <- predict(model_of_the_transform, iris_dataset) # nolint
-
-# AFTER
-summary(iris_dataset_yeo_johnson_transform)
-# Calculate the skewness after the Yeo-Johnson transform
-sapply(iris_dataset_yeo_johnson_transform[, 1:4],  skewness, type = 2)
-
-# Plot a histogram to view the skewness after the Yeo-Johnson transform
-par(mfrow = c(1, 4))
-for (i in 1:4) {
-  hist(iris_dataset_yeo_johnson_transform[, i],
-       main = names(iris_dataset_yeo_johnson_transform)[i])
-}
-
-### Yeo-Johnson Power Transform on the Pima Indians Diabetes Dataset ----
-# BEFORE
-summary(PimaIndiansDiabetes)
-
-# Calculate the skewness before the Yeo-Johnson transform
-sapply(PimaIndiansDiabetes[, 1:8],  skewness, type = 2)
-
-# Plot a histogram to view the skewness before the Yeo-Johnson transform
-par(mfrow = c(1, 8))
-for (i in 1:8) {
-  hist(PimaIndiansDiabetes[, i], main = names(PimaIndiansDiabetes)[i])
-}
-
-model_of_the_transform <- preProcess(PimaIndiansDiabetes,
-                                     method = c("YeoJohnson"))
-print(model_of_the_transform)
-pima_indians_diabetes_yeo_johnson_transform <- predict(model_of_the_transform, # nolint
-                                                       PimaIndiansDiabetes)
-
-# AFTER
-summary(pima_indians_diabetes_yeo_johnson_transform)
-
-# Calculate the skewness after the Yeo-Johnson transform
-sapply(pima_indians_diabetes_yeo_johnson_transform[, 1:8],  skewness, type = 2)
-
-# Plot a histogram to view the skewness after the Yeo-Johnson transform
-par(mfrow = c(1, 8))
-for (i in 1:8) {
-  hist(pima_indians_diabetes_yeo_johnson_transform[, i],
-       main = names(pima_indians_diabetes_yeo_johnson_transform)[i])
-}
 
 # Principal Component Analysis (PCA) Linear Algebra Transform ----
 
@@ -1062,47 +794,21 @@ for (i in 1:8) {
 # Factor Analysis (MFA) or Factor Analysis of Mixed Data (FAMD) can be used
 # instead.
 
-### PCA for Dimensionality Reduction on the Boston Housing Dataset ----
-# The initial 13 numeric variables in the Boston Housing dataset are reduced to
+### PCA for Dimensionality Reduction on the Student Performance ----
+# The initial 13 numeric variables in the Student Performance are reduced to
 # 10 variables which are in the form of principal components (not the initial
 # features).
-summary(BostonHousing)
+summary(StudentPerformanceDataset)
 
-model_of_the_transform <- preProcess(BostonHousing, method =
+model_of_the_transform <- preProcess(StudentPerformanceDataset, method =
                                        c("scale", "center", "pca"))
 
 print(model_of_the_transform)
-boston_housing_pca_dr <- predict(model_of_the_transform, BostonHousing)
+student_performance_pca_dr <- predict(model_of_the_transform, StudentPerformanceDataset)
 
-summary(boston_housing_pca_dr)
+summary(student_performance_pca_dr)
 
-### PCA for Dimensionality Reduction on the Crop Dataset ----
-# Notice that PCA is not applied to the “Crop Data” dataset because it requires
-# multiple numeric independent variables. The dataset has 3 categorical
-# independent variables and only 1 numeric independent variable.
 
-### PCA for Dimensionality Reduction on the Iris Dataset ----
-# The initial 4 numeric variables are reduced to 2 principal components
-summary(iris_dataset)
-
-model_of_the_transform <- preProcess(iris_dataset,
-                                     method = c("scale", "center", "pca"))
-print(model_of_the_transform)
-iris_dataset_pca_dr <- predict(model_of_the_transform, iris_dataset)
-
-summary(iris_dataset_pca_dr)
-dim(iris_dataset_pca_dr)
-
-### PCA for Dimensionality Reduction on the Pima Indians Diabetes Dataset ----
-# The initial 8 numeric variables are "reduced" to 8 principal components
-summary(PimaIndiansDiabetes)
-
-model_of_the_transform <- preProcess(PimaIndiansDiabetes,
-                                     method = c("scale", "center", "pca"))
-print(model_of_the_transform)
-pima_indians_diabetes_pca_transform <- predict(model_of_the_transform, # nolint
-                                               PimaIndiansDiabetes)
-summary(pima_indians_diabetes_pca_transform)
 
 ## STEP 9.b. PCA Linear Algebra Transform for Feature Extraction ----
 
@@ -1110,13 +816,13 @@ summary(pima_indians_diabetes_pca_transform)
 # matrix.
 
 ### PCA for Feature Extraction on the Boston Housing Dataset ----
-boston_housing_pca_fe <- princomp(cor(BostonHousing[, -4]))
-summary(boston_housing_pca_fe)
+student_performance_pca_fe <- princomp(cor(StudentPerformanceDataset[, 7:13]))
+summary(student_performance_pca_fe)
 
 #### Scree Plot ----
 # The Scree Plot shows that the 1st 2 principal components can cumulatively
 # explain 92.8% of the variance, i.e., 87.7% + 5.1% = 92.8%.
-factoextra::fviz_eig(boston_housing_pca_fe, addlabels = TRUE)
+factoextra::fviz_eig(student_performance_pca_fe, addlabels = TRUE)
 
 #### Loading Values ----
 # Remember: Principal components are new features created in the process of
@@ -1126,7 +832,7 @@ factoextra::fviz_eig(boston_housing_pca_fe, addlabels = TRUE)
 
 # The loading values for each variable in the 1st 2 principal components are
 # shown below:
-boston_housing_pca_fe$loadings[, 1:2]
+student_performance_pca_fe$loadings[, 1:2]
 
 # This is easier to understand using a visualization that shows the extent to
 # which each variable is represented in a given component.
@@ -1143,7 +849,7 @@ boston_housing_pca_fe$loadings[, 1:2]
 #    (ii) A high value, on the other hand, means a good representation of the
 #         variable on that component.
 
-factoextra::fviz_cos2(boston_housing_pca_fe, choice = "var", axes = 1:2)
+factoextra::fviz_cos2(student_performance_pca_fe, choice = "var", axes = 1:2)
 
 # The 8 most represented variables in the first 2 components (which we said
 # represent 92.8% of the variation) are, in descending order: indus, nox,
@@ -1158,46 +864,11 @@ factoextra::fviz_cos2(boston_housing_pca_fe, choice = "var", axes = 1:2)
 #    (iii) Variables that are negatively correlated are displayed in the
 #          opposite side of the origin.
 
-factoextra::fviz_pca_var(boston_housing_pca_fe, col.var = "cos2",
+factoextra::fviz_pca_var(student_performance_pca_fe, col.var = "cos2",
                          gradient.cols = c("red", "orange", "green"),
                          repel = TRUE)
 
-### PCA for Feature Extraction on the Pima Indians Diabetes Dataset ----
 
-pima_indians_diabetes_fe <- princomp(cor(PimaIndiansDiabetes[, 1:8]))
-summary(pima_indians_diabetes_fe)
-
-#### Scree Plot ----
-# The Scree Plot shows that the 1st 4 components can cumulatively explain
-# 87.4% of the variance.
-factoextra::fviz_eig(pima_indians_diabetes_fe,
-                     addlabels = TRUE)
-
-#### Loading Values ----
-# The loading values for each variable in the 1st 4 principal components are
-# shown below
-pima_indians_diabetes_fe$loadings[, 1:4]
-
-# This is easier to understand using a visualization that shows the extent to
-# which each variable is represented in a given component.
-
-# In this case, it shows the extent to which each variable is represented in
-# the first 4 components:
-factoextra::fviz_cos2(pima_indians_diabetes_fe,
-                      choice = "var", axes = 1:4)
-
-# The 6 most represented variables in the first 4 components are, in descending
-# order: pregnant, age, triceps, pedigree, insulin, and glucose
-
-#### Biplot and Cos2 Combined Plot ----
-# This can be confirmed using the following visualization.
-
-factoextra::fviz_pca_var(pima_indians_diabetes_fe, col.var = "cos2",
-                         gradient.cols = c("red", "black", "green"),
-                         repel = TRUE)
-
-
-# Independent Component Analysis (ICA) Linear Algebra Transform ----
 ## STEP 10. ICA Linear Algebra Transform for Dimensionality Reduction ----
 
 # Independent Component Analysis (ICA) transforms the data to return only the
@@ -1210,43 +881,17 @@ if (!is.element("fastICA", installed.packages()[, 1])) {
 }
 require("fastICA")
 
-### ICA for Dimensionality Reduction on the Boston Housing Dataset ----
-summary(BostonHousing)
+### ICA for Dimensionality Reduction on the Student Performance Dataset ----
+summary(StudentPerformanceDataset)
 
-model_of_the_transform <- preProcess(BostonHousing,
+model_of_the_transform <- preProcess(StudentPerformanceDataset,
                                      method = c("scale", "center", "ica"),
                                      n.comp = 8)
 print(model_of_the_transform)
-boston_housing_ica_dr <- predict(model_of_the_transform, BostonHousing)
+student_performance_ica_dr <- predict(model_of_the_transform, StudentPerformanceDataset)
 
-summary(boston_housing_ica_dr)
+summary(student_performance_ica_dr)
 
-### ICA for Dimensionality Reduction on the Crop Dataset ----
-# Notice that ICA is not applied to the “Crop Data” dataset because it requires
-# multiple numeric independent variables. The dataset has 3 categorical
-# independent variables and only 1 numeric independent variable.
-
-### ICA for Dimensionality Reduction on the Iris Dataset ----
-summary(iris_dataset)
-model_of_the_transform <- preProcess(iris_dataset,
-                                     method = c("scale", "center", "ica"),
-                                     n.comp = 3)
-print(model_of_the_transform)
-iris_dataset_ica_dr <- predict(model_of_the_transform, iris_dataset)
-
-summary(iris_dataset_ica_dr)
-
-### ICA for Dimensionality Reduction on the Pima Indians Diabetes Dataset ----
-summary(PimaIndiansDiabetes)
-
-model_of_the_transform <- preProcess(PimaIndiansDiabetes,
-                                     method = c("scale", "center", "ica"),
-                                     n.comp = 4)
-print(model_of_the_transform)
-pima_indians_diabetes_ica <- predict(model_of_the_transform,
-                                     PimaIndiansDiabetes)
-
-summary(pima_indians_diabetes_ica)
 
 # [OPTIONAL] **Deinitialization: Create a snapshot of the R environment ----
 # Lastly, as a follow-up to the initialization step, record the packages
